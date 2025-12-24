@@ -7,3 +7,8 @@ gem 'puma'
 gem 'json'
 gem 'dotenv'
 gem 'rackup'
+
+group :test do
+  gem 'rspec'
+  gem 'rack-test'
+end
