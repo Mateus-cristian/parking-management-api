@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'sinatra'
 require_relative '../config/enviroment'
 require_relative '../config/swagger'

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SwaggerRoutes
   def self.registered(app)
     return unless ENV['APP_ENV'] == 'development'
