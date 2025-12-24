@@ -2,13 +2,18 @@ source 'https://rubygems.org'
 
 ruby '3.2.0'
 
-gem 'sinatra'
-gem 'puma'
-gem 'json'
 gem 'dotenv'
+gem 'json'
+gem 'puma'
 gem 'rackup'
+gem 'rubocop'
+gem 'sinatra'
+
+group :development do
+  gem 'sinatra-contrib'
+end
 
 group :test do
-  gem 'rspec'
   gem 'rack-test'
+  gem 'rspec'
 end

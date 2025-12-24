@@ -1,0 +1,26 @@
+openapi: 3.0.3
+info:
+  title: Parking Management API
+  version: 0.1.0
+  description: API inicial com endpoint de health check
+
+servers:
+  - url: http://localhost:4567
+
+paths:
+  /health:
+    get:
+      summary: Health check da API
+      description: Verifica se a API está online
+      tags: [Health]
+      responses:
+        "200":
+          description: API saudável
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
