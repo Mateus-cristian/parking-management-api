@@ -25,7 +25,7 @@ RSpec.describe 'Parking API GET', type: :request do
       get '/v1/parking/nonexistentid', {}, headers
       expect(last_response.status).to eq(404)
       expect(JSON.parse(last_response.body)['error'])
-        .to eq('Parking entry not found')
+        .to eq('Resource not found')
     end
 
     it 'returns parking entry if found' do

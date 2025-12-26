@@ -25,4 +25,12 @@ describe Repositories::ParkingRepository do
     expect(Entities::Parking).to receive(:from_document).with(doc)
     repo.find_by_id(valid_id)
   end
+
+  it 'updates a parking' do
+    parking = double('Parking', id: valid_id,
+                                to_hash: { id: valid_id, plate: 'XYZ-9999', left: true })
+    expect(collection).to receive(:update_one).with({ _id: BSON::ObjectId.from_string(valid_id) },
+                                                    { '$set' => { plate: 'XYZ-9999', left: true } })
+    repo.update(parking)
+  end
 end
