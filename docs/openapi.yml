@@ -8,6 +8,47 @@ servers:
   - url: http://localhost:4567
 
 paths:
+  /v1/parking/{id}/pay:
+    put:
+      summary: Registers payment for a parking entry
+      description: Registers the payment for a parking entry. Requires Idempotency-Key header.
+      tags: [Parking]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Parking entry ID
+        - in: header
+          name: Idempotency-Key
+          required: true
+          schema:
+            type: string
+          description: Unique key to ensure idempotency
+      responses:
+        "204":
+          description: Payment registered successfully (no content)
+        "400":
+          description: Payment already registered or invalid operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Payment already registered
+        "404":
+          description: Parking entry not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Resource not found
   /v1/parking:
     post:
       summary: Cria uma nova entrada de estacionamento
