@@ -8,6 +8,78 @@ servers:
   - url: http://localhost:4567
 
 paths:
+  /v1/parking:
+    post:
+      summary: Cria uma nova entrada de estacionamento
+      description: Cria uma nova entrada de estacionamento. Requer o header Idempotency-Key.
+      tags: [Parking]
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          required: true
+          schema:
+            type: string
+          description: Chave única para garantir idempotência da requisição
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                plate:
+                  type: string
+                  example: ABC1234
+      responses:
+        "201":
+          description: Entrada criada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Parking"
+        "400":
+          description: Requisição inválida
+        "409":
+          description: Requisição duplicada (idempotente)
+        "422":
+          description: Placa inválida
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid plate format. Expected AAA-9999
+  /v1/parking/{id}:
+    get:
+      summary: Busca uma entrada de estacionamento pelo ID
+      description: Retorna os dados de uma entrada de estacionamento específica.
+      tags: [Parking]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID da entrada de estacionamento
+      responses:
+        "200":
+          description: Entrada encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Parking"
+        "404":
+          description: Entrada não encontrada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Parking entry not found
   /health:
     get:
       summary: Health check da API
@@ -24,3 +96,35 @@ paths:
                   status:
                     type: string
                     example: ok
+
+components:
+  schemas:
+    Parking:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "656f1b2e8f1b2c001e8f1b2e"
+        plate:
+          type: string
+          example: "ABC1234"
+        paid:
+          type: boolean
+          example: false
+        left:
+          type: boolean
+          example: false
+        created_at:
+          type: string
+          format: date-time
+          example: "2025-12-25T12:00:00Z"
+        paid_at:
+          type: string
+          format: date-time
+          nullable: true
+          example: null
+        left_at:
+          type: string
+          format: date-time
+          nullable: true
+          example: null
