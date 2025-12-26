@@ -22,6 +22,11 @@ module Repositories
       nil
     end
 
+    def find_history_by_plate(plate)
+      history = @collection.find({ plate: plate }).sort({ created_at: 1 }).to_a
+      history.map { |h| Entities::Parking.from_document(h) }
+    end
+
     def update(parking)
       id = parking.id
       attrs = parking.to_hash.reject { |k| k == :id }
@@ -35,6 +40,10 @@ module Repositories
     def find_open_by_plate(plate)
       doc = @collection.find({ plate: plate, left: false }).sort({ created_at: -1 }).first
       doc ? Entities::Parking.from_document(doc) : nil
+    end
+
+    def plate_exists?(plate)
+      @collection.find({ plate: plate }).limit(1).count.positive?
     end
   end
 end

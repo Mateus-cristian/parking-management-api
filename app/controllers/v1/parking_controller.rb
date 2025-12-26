@@ -4,7 +4,7 @@ module V1
   module ParkingController
     def self.registered(app)
       register_post_parking(app)
-      register_get_parking(app)
+      register_get_parking_history(app)
       put_parking_checkout(app)
       put_parking_payment(app)
     end
@@ -24,13 +24,24 @@ module V1
       end
     end
 
-    def self.register_get_parking(app)
-      app.get '/v1/parking/:id' do
-        parking = Repositories::ParkingRepository.new.find_by_id(params['id'])
-        raise Errors::NotFoundError unless parking
+    def self.register_get_parking_history(app)
+      app.get '/v1/parking/:plate' do
+        raw_plate = params['plate'].to_s.upcase.delete('-').strip
+        formatted_plate = raw_plate.insert(3, '-')
 
-        status 200
-        parking.to_json
+        repo = Repositories::ParkingRepository.new
+        history = repo.find_history_by_plate(formatted_plate)
+
+        if history.empty?
+          plate_exists = repo.plate_exists?(formatted_plate)
+          raise Errors::NotFoundError unless plate_exists
+
+          content_type :json
+          return JSON.pretty_generate([])
+
+        end
+        content_type :json
+        JSON.pretty_generate(history.map(&:to_hash))
       end
     end
 
