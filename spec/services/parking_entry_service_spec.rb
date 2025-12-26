@@ -7,6 +7,10 @@ describe Services::ParkingEntryService do
   let(:idempotency_service) { double('IdempotencyService') }
   let(:service) { described_class.new(repo, idempotency_service) }
 
+  before do
+    allow(repo).to receive(:find_open_by_plate).and_return(nil)
+  end
+
   it 'creates parking with valid plate' do
     expect(Validators::PlateValidator)
       .to receive(:validate!)

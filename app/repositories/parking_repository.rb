@@ -31,5 +31,10 @@ module Repositories
         { '$set' => attrs }
       )
     end
+
+    def find_open_by_plate(plate)
+      doc = @collection.find({ plate: plate, left: false }).sort({ created_at: -1 }).first
+      doc ? Entities::Parking.from_document(doc) : nil
+    end
   end
 end

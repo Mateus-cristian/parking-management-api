@@ -13,6 +13,9 @@ module Services
     def call(plate:, idempotency_key:)
       normalized_plate = Validators::PlateValidator.validate!(plate)
 
+      existing = @parking_repo.find_open_by_plate(normalized_plate)
+      raise Errors::CarAlreadyInParkingError if existing
+
       @idempotency_service.execute(idempotency_key) do
         parking = Entities::Parking.new(plate: normalized_plate)
         created = @parking_repo.create(parking)
