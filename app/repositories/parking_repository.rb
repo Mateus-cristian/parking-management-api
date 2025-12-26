@@ -22,15 +22,14 @@ module Repositories
       nil
     end
 
-    def update(parking_entity)
-      id = parking_entity.id
-      attrs = parking_entity.to_hash.reject { |k| k == :id }
+    def update(parking)
+      id = parking.id
+      attrs = parking.to_hash.reject { |k| k == :id }
 
-      attrs[:paid] = !attrs[:paid].nil?
-      attrs[:left] = !attrs[:left].nil?
-      attrs.compact!
-
-      @collection.update_one({ _id: BSON::ObjectId.from_string(id) }, { '$set' => attrs })
+      @collection.update_one(
+        { _id: BSON::ObjectId.from_string(id) },
+        { '$set' => attrs }
+      )
     end
   end
 end

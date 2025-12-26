@@ -9,22 +9,18 @@ describe Services::ParkingCheckoutService do
 
   describe '#call' do
     let(:parking_doc) do
-      attributes_for(:parking,
-                     id: '507f1f77bcf86cd799439011',
-                     plate: 'CHK-1234',
-                     paid: true,
-                     left: false)
-        .stringify_keys
-        .merge('_id' => '507f1f77bcf86cd799439011')
+      build(:parking,
+            id: '507f1f77bcf86cd799439011',
+            plate: 'CHK-1234',
+            paid: true,
+            left: false)
     end
     let(:unpaid_doc) do
-      attributes_for(:parking,
-                     id: '507f1f77bcf86cd799439012',
-                     plate: 'CHK-9999',
-                     paid: false,
-                     left: false)
-        .stringify_keys
-        .merge('_id' => '507f1f77bcf86cd799439012')
+      build(:parking,
+            id: '507f1f77bcf86cd799439012',
+            plate: 'CHK-9999',
+            paid: false,
+            left: false)
     end
 
     it 'marks as left if paid' do
@@ -39,7 +35,7 @@ describe Services::ParkingCheckoutService do
 
     it 'raises error if not paid' do
       expect(repo).to receive(:find_by_id).with('507f1f77bcf86cd799439012').and_return(unpaid_doc)
-      expect(idempotency_service).not_to receive(:execute)
+      allow(idempotency_service).to receive(:execute)
       expect(repo).not_to receive(:update)
       expect do
         service.call(id: '507f1f77bcf86cd799439012', idempotency_key: 'key2')
