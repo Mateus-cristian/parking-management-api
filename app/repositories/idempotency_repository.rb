@@ -14,9 +14,15 @@ module Repositories
     end
 
     def create(key, data)
+      serializable_data =
+        if data.respond_to?(:to_hash)
+          data.to_hash
+        else
+          data
+        end
       @collection.insert_one(
         idempotency_key: key,
-        data: data,
+        data: serializable_data,
         created_at: Time.now
       )
       data
