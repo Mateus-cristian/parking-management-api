@@ -18,6 +18,10 @@ Metrics/ClassLength:
 Metrics/AbcSize:
   Max: 20
 
+Metrics/BlockLength:
+  Exclude:
+    - "../spec/**/*.rb"
+
 Style/Documentation:
   Enabled: false
 
