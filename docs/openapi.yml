@@ -2,15 +2,46 @@ openapi: 3.0.3
 info:
   title: Parking Management API
   version: 0.1.0
-  description: API inicial com endpoint de health check
+  description: Initial API with health check endpoint
 
 servers:
   - url: http://localhost:4567
 
 paths:
+  /v1/parking/{id}:
+    get:
+      summary: Get all history for a parking entry
+      description: Returns an array with all records for the given parking id.
+      tags: [Parking]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: Parking entry ID
+      responses:
+        "200":
+          description: Array of parking records
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Parking"
+        "404":
+          description: No records found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Resource not found
   /v1/parking/{id}/pay:
     put:
-      summary: Registers payment for a parking entry
+      summary: Register payment for a parking entry
       description: Registers the payment for a parking entry. Requires Idempotency-Key header.
       tags: [Parking]
       parameters:
@@ -51,8 +82,8 @@ paths:
                     example: Resource not found
   /v1/parking:
     post:
-      summary: Cria uma nova entrada de estacionamento
-      description: Cria uma nova entrada de estacionamento. Requer o header Idempotency-Key.
+      summary: Create a new parking entry
+      description: Creates a new parking entry. Requires the Idempotency-Key header.
       tags: [Parking]
       parameters:
         - in: header
@@ -60,7 +91,7 @@ paths:
           required: true
           schema:
             type: string
-          description: Chave única para garantir idempotência da requisição
+          description: Unique key to ensure request idempotency
       requestBody:
         required: true
         content:
@@ -75,7 +106,7 @@ paths:
               plate: ABC-1234
       responses:
         "201":
-          description: Entrada criada com sucesso
+          description: Entry created successfully
           content:
             application/json:
               schema:
@@ -87,11 +118,11 @@ paths:
               example:
                 id: "656f1b2e8f1b2c001e8f1b2e"
         "400":
-          description: Requisição inválida
+          description: Invalid request
         "409":
-          description: Requisição duplicada (idempotente)
+          description: Duplicate request (idempotent)
         "422":
-          description: Placa inválida
+          description: Invalid plate
           content:
             application/json:
               schema:
@@ -100,38 +131,9 @@ paths:
                   error:
                     type: string
                     example: Invalid plate format. Expected AAA-9999
-  /v1/parking/{id}:
-    get:
-      summary: Busca uma entrada de estacionamento pelo ID
-      description: Retorna os dados de uma entrada de estacionamento específica.
-      tags: [Parking]
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-          description: ID da entrada de estacionamento
-      responses:
-        "200":
-          description: Entrada encontrada
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Parking"
-        "404":
-          description: Entrada não encontrada
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Parking entry not found
   /v1/parking/{id}/out:
     put:
-      summary: Marks the vehicle as left (checkout) from parking
+      summary: Mark the vehicle as left (checkout) from parking
       description: Marks the vehicle as left from parking. Requires Idempotency-Key header.
       tags: [Parking]
       parameters:
@@ -140,18 +142,18 @@ paths:
           required: true
           schema:
             type: string
-          description: ID da entrada de estacionamento
+          description: Parking entry ID
         - in: header
           name: Idempotency-Key
           required: true
           schema:
             type: string
-          description: Chave única para garantir idempotência da requisição
+          description: Unique key to ensure request idempotency
       responses:
         "204":
-          description: Checkout realizado com sucesso (sem conteúdo)
+          description: Checkout completed successfully (no content)
         "400":
-          description: Pagamento não realizado
+          description: Payment not completed
           content:
             application/json:
               schema:
@@ -161,7 +163,7 @@ paths:
                     type: string
                     example: Payment required before checkout
         "404":
-          description: Entrada não encontrada
+          description: Parking entry not found
           content:
             application/json:
               schema:
@@ -172,12 +174,12 @@ paths:
                     example: Resource not found
   /health:
     get:
-      summary: Health check da API
-      description: Verifica se a API está online
+      summary: API health check
+      description: Checks if the API is online
       tags: [Health]
       responses:
         "200":
-          description: API saudável
+          description: API healthy
           content:
             application/json:
               schema:
