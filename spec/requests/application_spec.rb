@@ -9,7 +9,7 @@ RSpec.describe 'Parking Management API' do
     App
   end
 
-  it 'responde com status ok no /health' do
+  it 'responds with ok status on /health' do
     get '/health'
     expect(last_response).to be_ok
     expect(last_response.body).to eq('{"status":"ok"}')
