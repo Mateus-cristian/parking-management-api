@@ -22,6 +22,13 @@ module Entities
       @left_at = Time.now
     end
 
+    def mark_as_paid
+      return if paid
+
+      @paid = true
+      @paid_at = Time.now
+    end
+
     def self.from_document(doc)
       return nil unless doc
 
