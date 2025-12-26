@@ -14,14 +14,22 @@ module Entities
       @left_at    = attrs[:left_at]
     end
 
+    def mark_as_left
+      raise Errors::NotPaidError unless paid
+      return if left
+
+      @left = true
+      @left_at = Time.now
+    end
+
     def self.from_document(doc)
       return nil unless doc
 
       new(
         id: doc['_id'].to_s,
         plate: doc['plate'],
-        paid: doc['paid'],
-        left: doc['left'],
+        paid: !!doc['paid'],
+        left: !!doc['left'],
         created_at: doc['created_at'],
         paid_at: doc['paid_at'],
         left_at: doc['left_at']

@@ -18,6 +18,14 @@ module Repositories
     def find_by_id(id)
       doc = @collection.find(_id: BSON::ObjectId.from_string(id)).first
       Entities::Parking.from_document(doc)
+    rescue BSON::Error::InvalidObjectId
+      nil
+    end
+
+    def update(parking_entity)
+      id = parking_entity.id
+      attrs = parking_entity.to_hash.reject { |k| k == :id }
+      @collection.update_one({ _id: BSON::ObjectId.from_string(id) }, { '$set' => attrs })
     end
   end
 end
