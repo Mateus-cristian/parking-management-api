@@ -5,6 +5,7 @@ module V1
     def self.registered(app)
       register_post_parking(app)
       register_get_parking(app)
+      put_parking_checkout(app)
     end
 
     def self.register_post_parking(app)
@@ -25,13 +26,22 @@ module V1
     def self.register_get_parking(app)
       app.get '/v1/parking/:id' do
         parking = Repositories::ParkingRepository.new.find_by_id(params['id'])
-        if parking
-          status 200
-          parking.to_json
-        else
-          status 404
-          { error: 'Parking entry not found' }.to_json
-        end
+        raise Errors::NotFoundError unless parking
+
+        status 200
+        parking.to_json
+      end
+    end
+
+    def self.put_parking_checkout(app)
+      app.put '/v1/parking/:id/checkout' do
+        idempotency_key = request.env['HTTP_IDEMPOTENCY_KEY']
+
+        Services::ParkingCheckoutService.new.call(
+          id: params['id'],
+          idempotency_key: idempotency_key
+        )
+        status 204
       end
     end
   end
