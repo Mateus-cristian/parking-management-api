@@ -8,18 +8,18 @@ servers:
   - url: http://localhost:4567
 
 paths:
-  /v1/parking/{id}:
+  /v1/parking/{plate}:
     get:
-      summary: Get all history for a parking entry
-      description: Returns an array with all records for the given parking id.
+      summary: Get all history for a license plate
+      description: Returns an array with all records for the given license plate.
       tags: [Parking]
       parameters:
         - in: path
-          name: id
+          name: plate
           required: true
           schema:
             type: string
-          description: Parking entry ID
+          description: License plate
       responses:
         "200":
           description: Array of parking records
