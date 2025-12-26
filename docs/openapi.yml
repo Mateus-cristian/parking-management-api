@@ -29,14 +29,22 @@ paths:
               properties:
                 plate:
                   type: string
-                  example: ABC1234
+                  example: ABC-1234
+            example:
+              plate: ABC-1234
       responses:
         "201":
           description: Entrada criada com sucesso
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Parking"
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "656f1b2e8f1b2c001e8f1b2e"
+              example:
+                id: "656f1b2e8f1b2c001e8f1b2e"
         "400":
           description: Requisição inválida
         "409":
