@@ -23,15 +23,17 @@ RSpec.describe 'Parking API POST', type: :request do
     end
 
     it 'creates a parking entry with valid plate' do
-      allow(parking_service).to receive(:call).and_return({ 'plate' => 'ABC-1234', 'id' => '123' })
+      allow(parking_service).to receive(:call).and_return({ id: '123' })
       post '/v1/parking', { plate: 'ABC-1234' }.to_json, headers
+
       expect(last_response.status).to eq(201)
-      expect(JSON.parse(last_response.body)['plate']).to eq('ABC-1234')
+      expect(JSON.parse(last_response.body)['id']).to eq('123')
     end
 
     it 'returns 422 for invalid plate' do
       allow(parking_service).to receive(:call).and_raise(Errors::InvalidPlateError.new)
       post '/v1/parking', { plate: '123-ABCD' }.to_json, headers
+
       expect(last_response.status).to eq(422)
       expect(JSON.parse(last_response.body)['error'])
         .to eq('Invalid plate format. Expected AAA-9999')

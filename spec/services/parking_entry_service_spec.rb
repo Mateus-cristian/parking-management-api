@@ -13,9 +13,9 @@ describe Services::ParkingEntryService do
       .with('ABC-1234')
       .and_return('ABC-1234')
     expect(idempotency_service).to receive(:execute).with('key').and_yield
-    parking = double('Parking', to_hash: { plate: 'ABC-1234' })
+    parking = double('Parking', id: '123')
     expect(repo).to receive(:create).and_return(parking)
-    expect(service.call(plate: 'ABC-1234', idempotency_key: 'key')).to eq({ plate: 'ABC-1234' })
+    expect(service.call(plate: 'ABC-1234', idempotency_key: 'key')).to eq({ id: '123' })
   end
 
   it 'raises error if plate is invalid' do

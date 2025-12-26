@@ -18,7 +18,7 @@ module V1
         )
 
         status 201
-        parking_data.to_json
+        { id: parking_data[:id] }.to_json
       end
     end
 
