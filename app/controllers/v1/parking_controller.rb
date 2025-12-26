@@ -34,7 +34,7 @@ module V1
     end
 
     def self.put_parking_checkout(app)
-      app.put '/v1/parking/:id/checkout' do
+      app.put '/v1/parking/:id/out' do
         idempotency_key = request.env['HTTP_IDEMPOTENCY_KEY']
 
         Services::ParkingCheckoutService.new.call(

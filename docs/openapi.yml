@@ -88,10 +88,10 @@ paths:
                   error:
                     type: string
                     example: Parking entry not found
-  /v1/parking/{id}/checkout:
+  /v1/parking/{id}/out:
     put:
-      summary: Realiza o checkout de uma entrada de estacionamento
-      description: Marca a saída do veículo do estacionamento. Requer o header Idempotency-Key.
+      summary: Marks the vehicle as left (checkout) from parking
+      description: Marks the vehicle as left from parking. Requires Idempotency-Key header.
       tags: [Parking]
       parameters:
         - in: path

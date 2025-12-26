@@ -20,13 +20,13 @@ RSpec.describe 'Parking API CHECKOUT', type: :request do
 
   it 'marks parking as left and returns 204' do
     allow(checkout_service).to receive(:call).and_return(true)
-    put '/v1/parking/507f1f77bcf86cd799439011/checkout', nil, headers
+    put '/v1/parking/507f1f77bcf86cd799439011/out', nil, headers
     expect(last_response.status).to eq(204)
   end
 
   it 'returns 400 if not paid' do
     allow(checkout_service).to receive(:call).and_raise(Errors::NotPaidError.new)
-    put '/v1/parking/507f1f77bcf86cd799439012/checkout', nil,
+    put '/v1/parking/507f1f77bcf86cd799439012/out', nil,
         headers.merge('HTTP_IDEMPOTENCY_KEY' => 'test-key-2')
     expect(last_response.status).to eq(400)
     expect(JSON.parse(last_response.body)['error']).to match(/Payment required/)
@@ -34,7 +34,7 @@ RSpec.describe 'Parking API CHECKOUT', type: :request do
 
   it 'returns 404 if not found' do
     allow(checkout_service).to receive(:call).and_raise(Errors::NotFoundError.new)
-    put '/v1/parking/000000000000000000000000/checkout', nil,
+    put '/v1/parking/000000000000000000000000/out', nil,
         headers.merge('HTTP_IDEMPOTENCY_KEY' => 'test-key-3')
     expect(last_response.status).to eq(404)
     expect(JSON.parse(last_response.body)['error']).to match(/not found/i)
