@@ -6,6 +6,7 @@ module V1
       register_post_parking(app)
       register_get_parking(app)
       put_parking_checkout(app)
+      put_parking_payment(app)
     end
 
     def self.register_post_parking(app)
@@ -41,6 +42,19 @@ module V1
           id: params['id'],
           idempotency_key: idempotency_key
         )
+        status 204
+      end
+    end
+
+    def self.put_parking_payment(app)
+      app.put '/v1/parking/:id/pay' do
+        idempotency_key = request.env['HTTP_IDEMPOTENCY_KEY']
+
+        Services::ParkingPaymentService.new.call(
+          id: params['id'],
+          idempotency_key: idempotency_key
+        )
+
         status 204
       end
     end
