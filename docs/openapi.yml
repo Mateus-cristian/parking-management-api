@@ -88,6 +88,47 @@ paths:
                   error:
                     type: string
                     example: Parking entry not found
+  /v1/parking/{id}/checkout:
+    put:
+      summary: Realiza o checkout de uma entrada de estacionamento
+      description: Marca a saída do veículo do estacionamento. Requer o header Idempotency-Key.
+      tags: [Parking]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID da entrada de estacionamento
+        - in: header
+          name: Idempotency-Key
+          required: true
+          schema:
+            type: string
+          description: Chave única para garantir idempotência da requisição
+      responses:
+        "204":
+          description: Checkout realizado com sucesso (sem conteúdo)
+        "400":
+          description: Pagamento não realizado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Payment required before checkout
+        "404":
+          description: Entrada não encontrada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Resource not found
   /health:
     get:
       summary: Health check da API
