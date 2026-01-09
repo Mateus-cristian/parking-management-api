@@ -7,19 +7,19 @@ module ErrorHandlers
     app.error Errors::BaseError do |error|
       content_type :json
       status error.status
-
-      {
-        error: error.message
-      }.to_json
+      { error: error.message }.to_json
     end
 
     app.error StandardError do |_error|
       content_type :json
       status 500
+      { error: 'Internal server error' }.to_json
+    end
 
-      {
-        error: 'Internal server error'
-      }.to_json
+    app.error Exception do |error|
+      content_type :json
+      status 500
+      { error: error.message }.to_json
     end
   end
 end
