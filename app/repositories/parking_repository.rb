@@ -2,48 +2,31 @@
 
 module Repositories
   class ParkingRepository
-    COLLECTION = :parkings
-
-    def initialize(client = MongoClient.client)
-      @collection = client[COLLECTION]
-    end
-
     def create(parking_entity)
-      attrs = parking_entity.to_hash.reject { |k| k == :id }
-      result = @collection.insert_one(attrs)
-      parking_entity.id = result.inserted_id.to_s
+      parking_entity.save!
       parking_entity
     end
 
     def find_by_id(id)
-      doc = @collection.find(_id: BSON::ObjectId.from_string(id)).first
-      Entities::Parking.from_document(doc)
-    rescue BSON::Error::InvalidObjectId
+      Entities::Parking.find(id)
+    rescue Mongoid::Errors::DocumentNotFound
       nil
     end
 
     def find_history_by_plate(plate)
-      history = @collection.find({ plate: plate }).sort({ created_at: 1 }).to_a
-      history.map { |h| Entities::Parking.from_document(h) }
+      Entities::Parking.where(plate: plate).asc(:created_at).to_a
     end
 
     def update(parking)
-      id = parking.id
-      attrs = parking.to_hash.reject { |k| k == :id }
-
-      @collection.update_one(
-        { _id: BSON::ObjectId.from_string(id) },
-        { '$set' => attrs }
-      )
+      parking.save!
     end
 
     def find_open_by_plate(plate)
-      doc = @collection.find({ plate: plate, left: false }).sort({ created_at: -1 }).first
-      doc ? Entities::Parking.from_document(doc) : nil
+      Entities::Parking.where(plate: plate, left: false).desc(:created_at).first
     end
 
     def plate_exists?(plate)
-      @collection.find({ plate: plate }).limit(1).count.positive?
+      Entities::Parking.where(plate: plate).exists?
     end
   end
 end
