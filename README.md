@@ -1,4 +1,3 @@
-
 # Parking Management API
 
 Uma API RESTful robusta e escalável para gerenciamento de operações de estacionamento, desenvolvida em Ruby. Este projeto permite o controle eficiente de entradas e saídas de veículos, processamento de pagamentos e consulta de histórico por placa, sendo ideal para estacionamentos, garagens e sistemas automatizados.
@@ -16,21 +15,23 @@ Uma API RESTful robusta e escalável para gerenciamento de operações de estaci
 │   ├── repositories/      # Repositórios para acesso a dados
 │   ├── services/          # Serviços e regras de negócio
 │   └── validators/        # Validadores de dados e regras de entrada
-├── config/            # Arquivos de configuração do projeto
-├── docs/              # Documentação (ex: OpenAPI/Swagger)
-├── infra/             # Infraestrutura (Docker, Compose, etc)
-├── public/            # Arquivos públicos e estáticos (ex: Swagger UI)
-├── spec/              # Testes automatizados (RSpec)
-├── Gemfile            # Gerenciador de dependências Ruby
-├── Makefile           # Comandos utilitários para build, testes, etc
-├── README.md          # Documentação principal do projeto
-└── ...                # Outros arquivos e diretórios auxiliares
+├── config/             # Arquivos de configuração do projeto
+├── docs/               # Documentação (ex: OpenAPI/Swagger)
+├── public/             # Arquivos públicos e estáticos (ex: Swagger UI)
+├── spec/               # Testes automatizados (RSpec)
+├── Gemfile             # Gerenciador de dependências Ruby
+├── Dockerfile          # Imagem da aplicação
+├── compose.yml         # Orquestração Docker Compose
+├── Rakefile            # Automação de tarefas (build, test, lint, etc)
+├── README.md           # Documentação principal
+└── ABOUT.md            # Detalhes de arquitetura e inspiração
 ```
 
 ## Ferramentas utilizadas
 
-- **Ruby 3.2.0** — Linguagem principal da aplicação
-- **Sinatra** — Framework web minimalista
+- **Ruby 3.3.5** — Linguagem principal
+- **Sinatra** — Framework web
+- **Mongoid** — ODM para MongoDB
 - **MongoDB** — Banco de dados NoSQL
 - **Mongo Ruby Driver** — Driver oficial para integração com MongoDB
 - **Rspec** — Testes automatizados
@@ -38,7 +39,6 @@ Uma API RESTful robusta e escalável para gerenciamento de operações de estaci
 - **Dotenv** — Gerenciamento de variáveis de ambiente
 - **Docker & Docker Compose** — Containerização e orquestração
 - **Swagger/OpenAPI** — Documentação interativa da API
-
 
 ## Versionamento da API
 
@@ -74,43 +74,44 @@ Para instalar e executar o projeto, siga um dos fluxos abaixo conforme seu ambie
 ### Instalação via Docker (Recomendado)
 1. Certifique-se de ter o Docker e o Docker Compose instalados em sua máquina.
 2. No diretório do projeto, execute:
-	```bash
-	make compose build
-	make compose up
-	```
-	Isso irá construir as imagens e iniciar todos os serviços necessários.
-
+   ```bash
+   docker compose build
+   docker compose up
+   ```
+   Isso irá construir as imagens e iniciar todos os serviços necessários.
 
 ### Instalação Local (Desenvolvimento)
-1. Certifique-se de ter o Ruby 3.2.0 e o Bundler instalados.
-	- **Linux/macOS:** Instalação direta, sem restrições.
-	- **Windows:** Recomenda-se utilizar o [WSL (Windows Subsystem for Linux)](https://docs.microsoft.com/pt-br/windows/wsl/) para evitar problemas de compatibilidade com gems nativas.
+
+1. Certifique-se de ter o Ruby 3.3.5 e o Bundler instalados.
+   - **Linux/macOS:** Instalação direta, sem restrições.
+   - **Windows:** Recomenda-se utilizar o [WSL (Windows Subsystem for Linux)](https://docs.microsoft.com/pt-br/windows/wsl/) para evitar problemas de compatibilidade com gems nativas.
 2. No diretório do projeto, instale as dependências:
-	```bash
-	bundle install
-	```
+   ```bash
+   bundle install
+   ```
 3. Inicie a aplicação localmente:
-	```bash
-	make start
-	```
+   ```bash
+   rake start
+   ```
 
-> **Dica:** Todas as operações de build, execução, testes e lint podem ser realizadas facilmente utilizando os comandos do Makefile para o modo com Docker, que centraliza e simplifica o fluxo de desenvolvimento.
+> **Dica:** Todas as operações de build, execução, testes e lint podem ser realizadas facilmente utilizando os comandos do Rakefile para o modo com Docker, que centraliza e simplifica o fluxo de desenvolvimento.
 
-## Comandos Disponíveis no Makefile
+## Comandos Rakefile
 
-Utilize os comandos abaixo para facilitar o desenvolvimento e manutenção do projeto:
+- `rake start` — Inicia o servidor local
+- `rake rubocop` — Executa o Rubocop no container api-dev (pode passar ARGS via variável de ambiente)
+- `rake test` — Executa os testes no container api-test
 
-- `make compose build` — Build das imagens Docker
-- `make compose up` — Sobe os containers definidos no Docker Compose
-- `make compose down` — Para e remove os containers
-- `make start` — Inicia a aplicação localmente (requer Ruby instalado)
-- `make test` — Executa a suíte de testes automatizados (no container)
-- `make rubocop` — Executa o linter Rubocop (no container)
+## Comandos Docker Compose
+
+- `docker compose build` — Build das imagens Docker
+- `docker compose up` — Sobe os containers
+- `docker compose down` — Para e remove containers
 
 ## Documentação da API
 Após iniciar a aplicação, acesse a documentação Swagger UI em:
 ```
-http://localhost:4567/swagger/
+http://localhost:4567/swagger
 ```
 
 ## Pontos Fortes
