@@ -2,7 +2,8 @@ openapi: 3.0.3
 info:
   title: Parking Management API
   version: 0.1.0
-  description: Initial API with health check endpoint
+  description: |
+    REST API for managing parking entries, payments, and vehicle history by license plate.
 
 servers:
   - url: http://localhost:4567
@@ -172,7 +173,7 @@ paths:
                   error:
                     type: string
                     example: Resource not found
-  /health:
+  /:
     get:
       summary: API health check
       description: Checks if the API is online
@@ -187,7 +188,9 @@ paths:
                 properties:
                   status:
                     type: string
-                    example: ok
+                    example: "project running 🚀"
+              example:
+                status: "project running 🚀"
 
 components:
   schemas:
