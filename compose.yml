@@ -1,0 +1,36 @@
+services:
+  api-dev:
+    build:
+      args:
+        BUNDLE_WITHOUT: "test"
+    ports:
+      - "4567:4567"
+    env_file:
+      - .env.development
+    depends_on:
+      - mongo
+    volumes:
+      - ./:/app
+
+  api-test:
+    build:
+      args:
+        BUNDLE_WITHOUT: ""
+    ports:
+      - "4568:4567"
+    env_file:
+      - .env.test
+    depends_on:
+      - mongo
+    volumes:
+      - ./:/app
+
+  mongo:
+    image: mongo:8
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:

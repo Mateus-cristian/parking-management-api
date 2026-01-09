@@ -1,0 +1,17 @@
+development:
+  clients:
+    default:
+      database: parking_management_development
+      hosts:
+        - mongo:27017
+      options:
+  options:
+
+test:
+  clients:
+    default:
+      database: parking_management_test
+      hosts:
+        - mongo:27017
+      options:
+  options:
