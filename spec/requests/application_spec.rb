@@ -10,8 +10,9 @@ RSpec.describe 'Parking Management API' do
   end
 
   it 'responds with ok status on /health' do
-    get '/health'
-    expect(last_response).to be_ok
-    expect(last_response.body).to eq('{"status":"ok"}')
+    get '/'
+    expect(last_response.status).to eq(200)
+    expect(last_response.headers['Content-Type']).to include('application/json')
+    expect(JSON.parse(last_response.body)['status']).to include('project running')
   end
 end

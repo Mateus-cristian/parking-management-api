@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Entities::Parking do
+  before(:each) { Entities::Parking.delete_all }
+
   describe '#mark_as_left' do
     it 'marks as left if paid' do
       parking = described_class.new(plate: 'AAA-0000', paid: true, left: false)

@@ -7,6 +7,8 @@ describe Services::ParkingCheckoutService do
   let(:idempotency_service) { double('IdempotencyService') }
   let(:service) { described_class.new(repo, idempotency_service) }
 
+  before(:each) { Entities::Parking.delete_all }
+
   describe '#call' do
     let(:parking_doc) do
       build(:parking,

@@ -12,6 +12,8 @@ RSpec.describe Services::ParkingPaymentService do
                           left: false)
   end
 
+  before(:each) { Entities::Parking.delete_all }
+
   describe '#call' do
     it 'marks as paid and updates parking' do
       expect(repo).to receive(:find_by_id).with('507f1f77bcf86cd799439011').and_return(parking)

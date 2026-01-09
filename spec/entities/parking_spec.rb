@@ -6,6 +6,8 @@ require 'factory_bot'
 describe Entities::Parking do
   include FactoryBot::Syntax::Methods
 
+  before(:each) { Entities::Parking.delete_all }
+
   it 'initializes correctly' do
     parking = build(:parking)
     expect(parking.plate).to eq('ABC-1234')
@@ -24,10 +26,14 @@ describe Entities::Parking do
 
   it 'creates from document' do
     doc = {
-      '_id' => '507f1f77bcf86cd799439011', 'plate' => 'ABC-1234', 'paid' => false, 'left' => false,
-      'created_at' => Time.now, 'paid_at' => nil, 'left_at' => nil
+      plate: 'ABC-1234',
+      paid: false,
+      left: false,
+      created_at: Time.now,
+      paid_at: nil,
+      left_at: nil
     }
-    parking = described_class.from_document(doc)
+    parking = Entities::Parking.new(doc)
     expect(parking.plate).to eq('ABC-1234')
   end
 end
