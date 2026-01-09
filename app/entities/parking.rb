@@ -2,50 +2,35 @@
 
 module Entities
   class Parking
-    attr_accessor :id, :plate, :paid, :left, :created_at, :paid_at, :left_at
+    include Mongoid::Document
+    include Mongoid::Timestamps
 
-    def initialize(attrs = {})
-      @id         = attrs[:id]
-      @plate      = attrs[:plate]
-      @paid       = attrs[:paid] || false
-      @left       = attrs[:left] || false
-      @created_at = attrs[:created_at] || Time.now
-      @paid_at    = attrs[:paid_at]
-      @left_at    = attrs[:left_at]
-    end
+    field :plate, type: String
+    field :paid, type: Boolean, default: false
+    field :left, type: Boolean, default: false
+    field :paid_at, type: Time
+    field :left_at, type: Time
 
     def mark_as_left
       raise Errors::NotPaidError unless paid
       return if left
 
-      @left = true
-      @left_at = Time.now
+      self.left = true
+      self.left_at = Time.now
+      save!
     end
 
     def mark_as_paid
       return if paid
 
-      @paid = true
-      @paid_at = Time.now
-    end
-
-    def self.from_document(doc)
-      return nil unless doc
-
-      new(
-        id: doc['_id'].to_s,
-        plate: doc['plate'],
-        paid: !!doc['paid'],
-        left: !!doc['left'],
-        created_at: doc['created_at'],
-        paid_at: doc['paid_at'],
-        left_at: doc['left_at']
-      )
+      self.paid = true
+      self.paid_at = Time.now
+      save!
     end
 
     def to_hash
       {
-        id: id,
+        id: id.to_s,
         plate: plate,
         paid: paid,
         left: left,
@@ -53,10 +38,6 @@ module Entities
         paid_at: paid_at,
         left_at: left_at
       }
-    end
-
-    def to_json(*_args)
-      to_hash.to_json
     end
   end
 end
